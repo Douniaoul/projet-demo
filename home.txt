@@ -1,0 +1,106 @@
+import 'package:flutter/material.dart';
+ 
+class Page2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          // ✅ background image
+          Positioned.fill(
+            child: Image.network(
+              'https://i.ibb.co/Mk6w779z/1739918839709.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+ 
+          // ✅ rose overlay
+          Positioned.fill(
+            child: Container(
+              color: Colors.brown.withOpacity(0.3),
+            ),
+          ),
+ 
+          // ✅ circular photo aligned to center left
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 0),
+              child: Container(
+                width: 270,
+                height: 270,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: NetworkImage(
+                        'https://i.ibb.co/Mk6w779z/1739918839709.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+ 
+          // ✅ vertical buttons on the right (moved lower)
+          Positioned(
+            right: 40,
+            top: MediaQuery.of(context).size.height * 0.35, // moved lower
+            child: Column(
+              children: [
+                MenuButton(icon: Icons.history, label: 'History'),
+                SizedBox(height: 50),
+                MenuButton(icon: Icons.restaurant_menu, label: 'Dishes'),
+              ],
+            ),
+          ),
+ 
+          Positioned(
+            right: 200,
+            top: MediaQuery.of(context).size.height * 0.2,
+            child: Column(
+              children: [
+                MenuButton(icon: Icons.person, label: 'Profile'),
+                SizedBox(height: 270),
+                MenuButton(icon: Icons.calendar_today, label: 'Calendar'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+ 
+class MenuButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+ 
+  const MenuButton({required this.icon, required this.label});
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 25,
+          backgroundColor: Colors.brown[300],
+          child: Icon(icon, color: Colors.white),
+        ),
+        SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              Shadow(
+                color: Color(0x42000000),
+                blurRadius: 2,
+                offset: Offset(2, 1),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
