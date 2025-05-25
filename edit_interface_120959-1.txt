@@ -1,0 +1,91 @@
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'edit_profile.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url:
+        'https://romncegfvzrwoxxnbtzr.supabase.co', // Replace with your Supabase URL
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvbW5jZWdmdnpyd294eG5idHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzNTA2ODMsImV4cCI6MjA1NjkyNjY4M30.diZlvSctla-3lRkQJFtGjl4TsOUpT6D_A3EBlcrm3UM', // Replace with your Supabase anon key
+  );
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
+    );
+  }
+}
+
+// ==================== Login Screen ====================
+
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final supabase = Supabase.instance.client;
+
+  Future<void> login() async {
+    final email = emailController.text.trim();
+
+    // Check if user exists in Supabase
+    final response = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+    if (response != null) {
+      // User exists, navigate to EditProfileScreen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditProfileScreen(email: email)),
+      );
+    } else {
+      // User not found, show error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('المستخدم غير موجود!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('تسجيل الدخول')),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'البريد الإلكتروني'),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: login,
+              child: Text('تسجيل الدخول'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
